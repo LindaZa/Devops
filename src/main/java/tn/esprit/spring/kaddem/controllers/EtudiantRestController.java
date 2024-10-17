@@ -78,6 +78,8 @@ public class EtudiantRestController {
 		return etudiantService.getEtudiantsByDepartement(idDepartement);
 	}
 
+
+
 }
 
 
