@@ -117,8 +117,20 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.9.1</version> <!-- Assurez-vous d'utiliser une version compatible -->
             </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version> <!-- Version du plugin à vérifier -->
+            </plugin>
+
+
         </plugins>
+
     </build>
+
+
+
 
 
 
