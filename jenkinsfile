@@ -12,6 +12,7 @@ pipeline {
             steps {
                 echo 'Pulling from Git'
                 git branch: 'ahedgossa_Devops', url: 'https://github.com/LindaZa/Devops'
+ 
             }
         }
         
