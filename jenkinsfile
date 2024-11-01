@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+       
+    
+    stages {
+        stage('Checkout from Git') {
+            steps {
+                echo 'Pulling from Git'
+                git branch: 'ahedgossa_Devops', url: 'https://github.com/LindaZa/Devops'
+            }
+        }
+        
+        stage('Maven Clean') {
+            steps {
+                echo 'Running Maven Clean'
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Maven Compile') {
+            steps {
+                echo 'Running Maven Compile'
+                sh 'mvn compile'
+            }
+        }
+         
+        }
