@@ -28,6 +28,16 @@ pipeline {
             }
         }
 
+        stage('Clean, Build & Test') {
+            steps {
+                echo 'Exécution de Maven Clean Install et génération du rapport JaCoCo'
+                sh '''
+                    mvn clean install
+                    mvn jacoco:report
+                '''
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 echo 'Exécution de l\'analyse SonarQube'
@@ -39,5 +49,6 @@ pipeline {
     }
 }
 
+      
         
  
