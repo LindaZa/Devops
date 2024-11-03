@@ -14,22 +14,28 @@ pipeline {
             }
         }
 
-        stage('Display Maven Version') {
+       stage('Maven Clean') {
             steps {
-                echo 'Affichage de la version de Maven'
-                sh 'mvn -v'
+                echo 'Running Maven Clean'
+                sh 'mvn clean'
             }
         }
 
-        stage('Clean, Build & Test') {
+       
+        stage('Maven Compile') {
             steps {
-                echo 'Exécution de Maven Clean, Install et JaCoCo'
-                sh '''
-                    mvn clean install -e
-                    mvn jacoco:report
-                '''
+                echo 'Running Maven Compile'
+                sh 'mvn compile'
             }
         }
+
+        stage('Coverage Report') {
+            steps {
+                // Generate the Jacoco coverage report
+                sh '/usr/share/maven/bin/mvn verify'
+            }
+        }
+
 
         stage('SonarQube Analysis') {
             steps {
