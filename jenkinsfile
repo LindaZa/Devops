@@ -25,7 +25,7 @@ pipeline {
             steps {
                 echo 'Exécution de Maven Clean, Install et JaCoCo'
                 sh '''
-                    mvn clean install
+                    mvn clean install -e
                     mvn jacoco:report
                 '''
             }
