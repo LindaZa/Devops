@@ -14,14 +14,13 @@ pipeline {
             }
         }
 
-       stage('Maven Clean') {
+        stage('Maven Clean') {
             steps {
                 echo 'Running Maven Clean'
                 sh 'mvn clean'
             }
         }
 
-       
         stage('Maven Compile') {
             steps {
                 echo 'Running Maven Compile'
@@ -29,11 +28,17 @@ pipeline {
             }
         }
 
-       
-
-       
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube Analysis'
+                withSonarQubeEnv('SonarQube-Server') { 
+                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=ahed -Dsonar.projectName=\'ahed\''
+                }
+            }
+        }
     }
 }
+
 
       
         
