@@ -14,23 +14,16 @@ pipeline {
             }
         }
 
-        stage('Maven Clean') {
+        stage('Display Maven Version') {
             steps {
-                echo 'Exécution de Maven Clean'
-                sh 'mvn clean'
-            }
-        }
-
-        stage('Maven Compile') {
-            steps {
-                echo 'Exécution de Maven Compile'
-                sh 'mvn compile'
+                echo 'Affichage de la version de Maven'
+                sh 'mvn -v'
             }
         }
 
         stage('Clean, Build & Test') {
             steps {
-                echo 'Exécution de Maven Clean Install et génération du rapport JaCoCo'
+                echo 'Exécution de Maven Clean, Install et JaCoCo'
                 sh '''
                     mvn clean install
                     mvn jacoco:report
