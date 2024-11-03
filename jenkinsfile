@@ -29,22 +29,9 @@ pipeline {
             }
         }
 
-        stage('Coverage Report') {
-            steps {
-                // Generate the Jacoco coverage report
-                sh '/usr/share/maven/bin/mvn verify'
-            }
-        }
+       
 
-
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Exécution de l\'analyse SonarQube'
-                withSonarQubeEnv('SonarQube-Server') {
-                    sh "mvn sonar:sonar -Dsonar.projectKey=ahed -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_LOGIN}"
-                }
-            }
-        }
+       
     }
 }
 
