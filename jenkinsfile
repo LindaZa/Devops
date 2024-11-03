@@ -30,12 +30,16 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
+
                 echo 'Running SonarQube Analysis'
                 withSonarQubeEnv('SonarQube-Server') { 
                     sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=ahed -Dsonar.projectName=\'ahed\''
                 }
             }
-        }
+        }    
+
+       
+
     }
 }
 
