@@ -52,6 +52,20 @@
         <!-- Ajoute ici d'autres dépendances nécessaires -->
     </dependencies>
 
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.3</version> <!-- Version compatible avec Java 21 -->
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </pluginManagement>
+
     <build>
         <plugins>
             <plugin>
