@@ -42,12 +42,16 @@ pipeline {
             steps {
                 echo 'Deploying to Nexus...'
                 withCredentials([usernamePassword(credentialsId: 'nexuscredentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-                    sh 'mvn deploy -DskipTests -Dusername=$NEXUS_USERNAME -Dpassword=$NEXUS_PASSWORD'
+                    sh '''
+                        mvn deploy -DskipTests \
+                        -DaltDeploymentRepository=nexus::default::http://10.0.2.15:9001/repository/MavenRepository/
+                    '''
                 }
             }
         }
     }
 }
+
 
       
 
