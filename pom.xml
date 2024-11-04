@@ -89,5 +89,11 @@
         </plugins>
     </build>
 
-    <!-- Modification pour test -->
+    <distributionManagement>
+        <repository>
+            <id>MavenRepository</id>
+            <name>Nexus Repository</name>
+            <url>http://10.0.2.15:9001/repository/MavenRepository/</url>
+        </repository>
+    </distributionManagement>
 </project>
