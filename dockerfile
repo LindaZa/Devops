@@ -1,11 +1,8 @@
-# Utiliser l'image openjdk 17 depuis Docker Hub
+# Use the openjdk17 image from Docker Hub
 FROM openjdk:17
-
-# Exposer le port sur lequel l'application Spring Boot va tourner
+# Expose the port of your Spring Boot application
 EXPOSE 8080
-
-# Copier le fichier JAR dans l'image Docker
-ADD target/kaddem-0.0.1-20241104.212128-1.jar /kaddem-0.0.1.jar
-
-# Définir la commande pour exécuter l'application Spring Boot
+# Copy the jar of the application into the container
+ADD target/kaddem-0.0.1.jar kaddem-0.0.1.jar
+  # Commande pour exécuter l'application
 ENTRYPOINT ["java", "-jar", "/kaddem-0.0.1.jar"]
