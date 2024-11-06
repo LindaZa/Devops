@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+            SONARQUBE_SERVER = 'sq1'  // Ensure this matches the name of the SonarQube server in Jenkins configuration
+
+        }
     stages {
         stage('Checkout') {
             steps {
@@ -48,6 +52,18 @@ pipeline {
                 }
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Make sure you have a SonarQube server configured in Jenkins
+                    withSonarQubeEnv('sq1') {
+                        // Run the SonarQube scan using Maven
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=projet -Dsonar.host.url=http://192.168.33.10:9000'
+                    }
+                }
+            }
+        }
+
 
     }
 }
