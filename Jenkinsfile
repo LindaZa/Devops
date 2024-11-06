@@ -41,13 +41,13 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing Docker image to Docker Hub...'
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'c4a4420a-8b6a-43a9-b29c-15a6caf9e741', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     sh 'docker tag myapp:latest skander1f/myapp:latest'  // Tag image with your Docker Hub username
                     sh 'docker push skander1f/myapp:latest'  // Push the image to Docker Hub
                 }
             }
         }
-        
+
     }
 }
