@@ -14,12 +14,12 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t myapp:latest .'  // Replace "myapp" with your desired image name
+                sh 'sudo docker build -t myapp:latest .'  // Replace "myapp" with your desired image name
             }
         }
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d --name myapp_container myapp:latest'  // Replace "myapp_container" as needed
+                sh 'sudo docker run -d --name myapp_container myapp:latest'  // Replace "myapp_container" as needed
             }
         }
     }
