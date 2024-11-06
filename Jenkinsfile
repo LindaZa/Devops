@@ -30,5 +30,22 @@ pipeline {
                 sh 'docker run -d --name myapp_container myapp:latest'
             }
         }
+        stage('Verify Docker Container') {
+            steps {
+                echo 'Verifying if the Docker container is running...'
+                sh 'docker ps'
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                echo 'Pushing Docker image to Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                    sh 'docker tag myapp:latest skander1f/myapp:latest'  // Tag image with your Docker Hub username
+                    sh 'docker push skander1f/myapp:latest'  // Push the image to Docker Hub
+                }
+            }
+        }
+        
     }
 }
