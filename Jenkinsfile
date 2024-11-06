@@ -56,7 +56,7 @@ pipeline {
             steps {
                 script {
                     // Make sure you have a SonarQube server configured in Jenkins
-                    withSonarQubeEnv('jenkins-sonar') {
+                    withSonarQubeEnv('sq1') {
                         // Run the SonarQube scan using Maven
                         sh 'mvn sonar:sonar -Dsonar.projectKey=jenkins-sonar -Dsonar.host.url=http://192.168.33.10:9000'
                     }
