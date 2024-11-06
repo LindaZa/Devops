@@ -5,6 +5,7 @@ pipeline {
         SONAR_HOST_URL = 'http://10.0.2.15:9000/'
         SONAR_LOGIN = credentials('sonarcredentials')
         NEXUS_HOST_URL = 'http://10.0.2.15:9001/'
+        DOCKER_CREDENTIALS = credentials('dockercredentials')
     }
 
     stages {
@@ -50,8 +51,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Test Docker Access') {
+            steps {
+                echo 'Testing Docker access...'
+                sh 'docker images'
+            }
+        }
+   
     }
 }
+
 
 
       
