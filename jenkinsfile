@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://10.0.2.15:9000/'
-        SONAR_LOGIN = credentials('sonarcredentials')
+        SONAR_LOGIN = credentials('sonar')
         NEXUS_HOST_URL = 'http://10.0.2.15:9001/'
         DOCKER_CREDENTIALS = credentials('dockercredentials')
     }
