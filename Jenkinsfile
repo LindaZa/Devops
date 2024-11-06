@@ -14,13 +14,14 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'sudo docker build -t myapp:latest .'  // Replace "myapp" with your desired image name
+                sh 'echo "your_sudo_password" | sudo -S docker build -t myapp:latest .'
             }
         }
         stage('Run Docker Container') {
             steps {
-                sh 'sudo docker run -d --name myapp_container myapp:latest'  // Replace "myapp_container" as needed
+                sh 'echo "your_sudo_password" | sudo -S docker run -d --name myapp_container myapp:latest'
             }
         }
+
     }
 }
