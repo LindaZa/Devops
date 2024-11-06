@@ -27,6 +27,8 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 echo 'Running Docker container...'
+                // Remove any existing container with the same name before starting a new one
+                sh 'docker rm -f myapp_container || true'
                 sh 'docker run -d --name myapp_container myapp:latest'
             }
         }
