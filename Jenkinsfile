@@ -6,11 +6,21 @@ pipeline {
                 checkout scm
             }
         }
-        stage('MVN build') {
-                        steps {
-                            echo 'MVN ...'
-                            sh 'mvn install -DskipTests'
-                        }
-                    }
+        stage('MVN Build') {
+            steps {
+                echo 'Running Maven build...'
+                sh 'mvn install -DskipTests'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t myapp:latest .'  // Replace "myapp" with your desired image name
+            }
+        }
+        stage('Run Docker Container') {
+            steps {
+                sh 'docker run -d --name myapp_container myapp:latest'  // Replace "myapp_container" as needed
+            }
+        }
     }
 }
