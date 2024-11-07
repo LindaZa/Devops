@@ -52,15 +52,7 @@ pipeline {
             }
         }
 
-        stage('Test Docker Access') {
-            steps {
-                echo 'Testing Docker access...'
-                sh 'docker images'
-            }
-        }
-      
-     
-        stage('Build Docker Image') {
+       stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
                 script {
@@ -69,11 +61,13 @@ pipeline {
                     }
                 }
             }
-        stage('Push DockerHub') {
+        
+
+     stage('Push DockerHub') {
             steps {
                 echo 'Pushing Docker image...'
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockercredentials'', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockercredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     
                 // Connexion à Docker
                 sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
@@ -84,6 +78,7 @@ pipeline {
                 }
             }
         }
+         
         
    
     }
