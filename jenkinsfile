@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_CREDENTIALS_ID = 'Devops'  // Utilisez votre ID de credentials GitHub dans Jenkins
+    }
+
+    stages {
+        stage('Checkout from GitHub') {
+            steps {
+                script {
+                    // Pull le projet depuis la branche 'WassimMoussa' dans GitHub
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/WassimMoussa']],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/LindaZa/Devops.git',
+                            credentialsId: env.GIT_CREDENTIALS_ID
+                        ]]
+                    ])
+                }
+            }
+        }
+        
+        stage('Maven Clean') {
+            steps {
+                echo 'Running Maven Clean'
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Maven Compile') {
+            steps {
+                echo 'Running Maven Compile'
+                sh 'mvn compile'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                
+                    sh '''
+                        mvn -f pom.xml sonar:sonar \
+                          -Dsonar.projectKey=Devops \
+                          -Dsonar.host.url=http://192.168.1.21:9000 \
+                          -Dsonar.login=184a6bd25f20391fe552ad890d5d47c034e80bfd \
+                          -Dsonar.java.coveragePlugin=jacoco \
+                          -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml
+                    '''
+                
+            }
+        }
+    }
+}
