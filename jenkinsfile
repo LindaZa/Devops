@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://10.0.2.15:9000/'
-        SONAR_LOGIN = credentials('sonar')
+        SONAR_LOGIN = credentials('sonar')  // Votre clé d'authentification pour SonarQube
         NEXUS_HOST_URL = 'http://10.0.2.15:9001/'
         DOCKER_CREDENTIALS = credentials('dockercredentials')
     }
@@ -30,10 +30,25 @@ pipeline {
             }
         }
 
+        stage('JUnit Tests') {
+            steps {
+                echo 'Running JUnit Tests'
+                sh 'mvn test'
+            }
+        }
+
+        // Stage pour l'analyse SonarQube
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube-Server') { 
-                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=ahed -Dsonar.projectName=ahed -DskipTests'
+                    // Exécuter l'analyse SonarQube en incluant les résultats des tests et la couverture JaCoCo
+                    sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=ahed \
+                        -Dsonar.projectName=ahed \
+                        -Dsonar.login=$SONAR_LOGIN \
+                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                    '''
                 }
             }
         }
@@ -52,44 +67,36 @@ pipeline {
             }
         }
 
-       stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
                 script {
-                   
-                      sh 'docker build -t ahedgossa2024/dockerrepository:1.0.0 -f dockerfile .'
-                    }
+                    sh 'docker build -t ahedgossa2024/dockerrepository:1.0.0 -f dockerfile .'
                 }
             }
-        
+        }
 
-     stage('Push DockerHub') {
+        stage('Push DockerHub') {
             steps {
                 echo 'Pushing Docker image...'
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockercredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    
-                // Connexion à Docker
-                sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                
-           
-                sh 'docker push ahedgossa2024/dockerrepository:1.0.0'
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        sh 'docker push ahedgossa2024/dockerrepository:1.0.0'
                     }
                 }
             }
         }
 
-     stage('Docker Compose') {
+        stage('Docker Compose') {
             steps {
-             script {
-            sh'docker compose pull'
-            sh 'docker compose down'
-            sh 'docker compose up -d'
+                script {
+                    sh 'docker compose pull'
+                    sh 'docker compose down'
+                    sh 'docker compose up -d'
+                }
             }
-         }
-        }    
-        
-   
+        }
     }
 }
 
