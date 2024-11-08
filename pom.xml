@@ -8,6 +8,13 @@
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+            <name>NexusRepository</name>
+            <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
     <groupId>tn.esprit.spring</groupId>
     <artifactId>kaddem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -126,6 +133,9 @@
 
 
         </plugins>
+
+
+
 
     </build>
 
