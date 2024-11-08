@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        SONAR_HOST_URL = 'http://10.0.2.15:9000/'
-        SONAR_LOGIN = credentials('sonar')  // Votre clé d'authentification pour SonarQube
-        NEXUS_HOST_URL = 'http://10.0.2.15:9001/'
+        SONAR_HOST_URL = 'http://10.0.2.15:9000/'  // L'URL de ton serveur SonarQube
+        SONAR_LOGIN = credentials('sonar')  // Clé d'authentification SonarQube
+        NEXUS_HOST_URL = 'http://10.0.2.15:9001/'  // URL de ton serveur Nexus
         DOCKER_CREDENTIALS = credentials('dockercredentials')
     }
 
@@ -47,7 +47,8 @@ pipeline {
                         -Dsonar.projectKey=ahed \
                         -Dsonar.projectName=ahed \
                         -Dsonar.login=$SONAR_LOGIN \
-                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                        -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report.xml \
+                        -Dsonar.java.binaries=target/classes
                     '''
                 }
             }
@@ -99,6 +100,7 @@ pipeline {
         }
     }
 }
+
 
 
 
