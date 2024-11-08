@@ -9,43 +9,46 @@ pipeline {
     }
 
     stages {
+        // Checkout from Git
         stage('Checkout from Git') {
             steps {
-                echo 'Récupération depuis Git'
+                echo 'Récupération du code depuis Git'
                 git branch: 'ahedgossa_Devops', url: 'https://github.com/LindaZa/Devops'
             }
         }
 
+        // Maven Clean
         stage('Maven Clean') {
             steps {
-                echo 'Running Maven Clean'
+                echo 'Exécution de Maven Clean'
                 sh 'mvn clean'
             }
         }
 
+        // Maven Compile
         stage('Maven Compile') {
             steps {
-                echo 'Running Maven Compile'
+                echo 'Exécution de Maven Compile'
                 sh 'mvn compile'
             }
         }
 
+        // Générer le rapport JaCoCo
         stage('Coverage Report') {
             steps {
-                // Générer le rapport de couverture JaCoCo
-                sh '/usr/share/maven/bin/mvn verify'
+                echo 'Génération du rapport de couverture JaCoCo'
+                sh 'mvn verify'
             }
         }
 
-        // Stage pour l'analyse SonarQube
+        // Analyse SonarQube
         stage('SonarQube Analysis') {
             steps {
-                // echo 'Running SonarQube Analysis'
-                withSonarQubeEnv('SonarQube-Server') { 
-                    // Exécution de l'analyse SonarQube avec les paramètres requis
+                echo 'Exécution de l\'analyse SonarQube'
+                withSonarQubeEnv('SonarQube-Server') {
                     sh '''
                         mvn sonar:sonar \
-                        -Dsonar.projectKey=ahed \  # Clé de ton projet dans SonarQube
+                        -Dsonar.projectKey=ahed \
                         -Dsonar.host.url=$SONAR_HOST_URL \
                         -Dsonar.login=$SONAR_LOGIN \
                         -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
@@ -54,16 +57,18 @@ pipeline {
             }
         }
 
+        // Tests unitaires JUnit et génération du rapport JaCoCo
         stage('JUnit/Mockito Tests') {
             steps {
-                echo 'Running JUnit/Mockito Tests'
+                echo 'Exécution des tests unitaires JUnit/Mockito'
                 sh 'mvn test jacoco:report'
             }
         }
 
+        // Déploiement sur Nexus
         stage('Deploy to Nexus') {
             steps {
-                echo 'Deploying to Nexus...'
+                echo 'Déploiement vers Nexus...'
                 withCredentials([usernamePassword(credentialsId: 'nexuscredentials', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
                     sh '''
                         mvn deploy -DskipTests \
@@ -75,18 +80,20 @@ pipeline {
             }
         }
 
+        // Construction de l'image Docker
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
+                echo 'Construction de l\'image Docker...'
                 script {
-                    sh 'docker build -t ahedgossa2024/dockerrepository:1.0.0 -f dockerfile .'
+                    sh 'docker build -t ahedgossa2024/dockerrepository:1.0.0 -f Dockerfile .'
                 }
             }
         }
 
+        // Push de l'image Docker sur DockerHub
         stage('Push DockerHub') {
             steps {
-                echo 'Pushing Docker image...'
+                echo 'Push de l\'image Docker sur DockerHub...'
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockercredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
@@ -96,8 +103,10 @@ pipeline {
             }
         }
 
+        // Docker Compose pour déployer les conteneurs
         stage('Docker Compose') {
             steps {
+                echo 'Exécution de Docker Compose'
                 script {
                     sh 'docker compose pull'
                     sh 'docker compose down'
@@ -107,6 +116,11 @@ pipeline {
         }
     }
 }
+
+                
+        
+                   
+           
 
 
       
