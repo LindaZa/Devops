@@ -40,17 +40,25 @@ pipeline {
         // Stage pour l'analyse SonarQube
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube-Server') { 
-                    // Exécuter l'analyse SonarQube en incluant les résultats des tests et la couverture JaCoCo
+                withSonarQubeEnv('SonarQube-Server') {
+                    echo 'Running SonarQube Analysis'
                     sh '''
                         mvn sonar:sonar \
                         -Dsonar.projectKey=ahed \
                         -Dsonar.projectName=ahed \
                         -Dsonar.login=$SONAR_LOGIN \
-                        -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report.xml \
+                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
                         -Dsonar.java.binaries=target/classes
                     '''
                 }
+            }
+        }
+
+        // Stage pour le rapport de couverture
+        stage('Coverage Report') {
+            steps {
+                echo 'Generating JaCoCo Coverage Report'
+                sh 'mvn verify'
             }
         }
 
@@ -100,8 +108,6 @@ pipeline {
         }
     }
 }
-
-
 
 
       
