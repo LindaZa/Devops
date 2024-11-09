@@ -25,11 +25,10 @@ pipeline {
 
         stage('Coverage Report') {
             steps {
-                // Generate the Jacoco coverage report
-                sh '/usr/share/maven/bin/mvn verify'
+                echo 'Génération du rapport de couverture'
+                sh 'mvn clean verify'
             }
         }
-
 
         stage('SonarQube Analysis') {
             steps {
@@ -40,13 +39,13 @@ pipeline {
                         -Dsonar.projectKey=ahed \
                         -Dsonar.host.url=$SONAR_HOST_URL \
                         -Dsonar.login=$SONAR_LOGIN \
-                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                        -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report/jacoco.xml
                     '''
                 }
             }
         }
 
-         stage('JUnit/Mockito Tests') {
+        stage('JUnit/Mockito Tests') {
             steps {
                 echo 'Running JUnit/Mockito Tests'
                 sh 'mvn test jacoco:report'
@@ -101,6 +100,7 @@ pipeline {
         }
     }
 }
+
 
                 
         
