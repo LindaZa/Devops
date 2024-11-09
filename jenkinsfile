@@ -33,7 +33,7 @@ pipeline {
         stage('Run Tests with JaCoCo') {
             steps {
                 echo 'Exécution des tests avec JaCoCo pour générer les rapports de couverture'
-                sh 'mvn test' // Cette étape exécute les tests et génère les rapports JaCoCo
+                sh 'mvn test' // Exécute les tests et génère les rapports JaCoCo
             }
         }
 
