@@ -19,7 +19,6 @@
 
     <properties>
         <java.version>17</java.version>
-        <!-- Propriétés supplémentaires -->
         <springdoc.version>1.6.9</springdoc.version>
         <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
@@ -69,7 +68,6 @@
 
     <build>
         <plugins>
-            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -80,13 +78,11 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- JaCoCo Plugin pour la couverture de code -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -100,7 +96,7 @@
                     </execution>
                     <execution>
                         <id>jacoco-site</id>
-                        <phase>package</phase>
+                        <phase>verify</phase> <!-- Phase modifiée ici -->
                         <goals>
                             <goal>report</goal>
                         </goals>
@@ -108,22 +104,11 @@
                 </executions>
             </plugin>
 
-            <!-- SonarQube Plugin pour l'analyse du code -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>4.0.0.4121</version>
             </plugin>
-
         </plugins>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>MavenRepository</id>
-            <name>Nexus Repository</name>
-            <url>http://10.0.2.15:9001/repository/MavenRepository/</url>
-        </repository>
-    </distributionManagement>
-
 </project>
