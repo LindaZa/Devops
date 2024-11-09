@@ -2,14 +2,13 @@ pipeline {
     agent any
 
     environment {
-        SONAR_HOST_URL = 'http://10.0.2.15:9000/'  // L'URL de ton serveur SonarQube
+        SONAR_HOST_URL = 'http://10.0.2.15:9000/'
         SONAR_LOGIN = credentials('sonar')  // Clé d'authentification SonarQube
-        NEXUS_HOST_URL = 'http://10.0.2.15:9001/'  // URL de ton serveur Nexus
+        NEXUS_HOST_URL = 'http://10.0.2.15:9001/'
         DOCKER_CREDENTIALS = credentials('dockercredentials')
     }
 
     stages {
-        // Checkout from Git
         stage('Checkout from Git') {
             steps {
                 echo 'Récupération du code depuis Git'
@@ -17,7 +16,6 @@ pipeline {
             }
         }
 
-        // Maven Clean
         stage('Maven Clean') {
             steps {
                 echo 'Exécution de Maven Clean'
@@ -25,7 +23,6 @@ pipeline {
             }
         }
 
-        // Maven Compile
         stage('Maven Compile') {
             steps {
                 echo 'Exécution de Maven Compile'
@@ -33,7 +30,13 @@ pipeline {
             }
         }
 
-        // Générer le rapport JaCoCo
+        stage('Check JaCoCo Report') {
+            steps {
+                echo 'Vérification des fichiers JaCoCo générés'
+                sh 'ls -la target/site/jacoco/'
+            }
+        }
+
         stage('Coverage Report') {
             steps {
                 echo 'Génération du rapport de couverture JaCoCo'
@@ -41,7 +44,6 @@ pipeline {
             }
         }
 
-        // Analyse SonarQube
         stage('SonarQube Analysis') {
             steps {
                 echo 'Exécution de l\'analyse SonarQube'
@@ -54,14 +56,6 @@ pipeline {
                         -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                     '''
                 }
-            }
-        }
-
-        // Tests unitaires JUnit et génération du rapport JaCoCo
-        stage('JUnit/Mockito Tests') {
-            steps {
-                echo 'Exécution des tests unitaires JUnit/Mockito'
-                sh 'mvn test jacoco:report'
             }
         }
 
@@ -80,7 +74,6 @@ pipeline {
             }
         }
 
-        // Construction de l'image Docker
         stage('Build Docker Image') {
             steps {
                 echo 'Construction de l\'image Docker...'
@@ -90,7 +83,6 @@ pipeline {
             }
         }
 
-        // Push de l'image Docker sur DockerHub
         stage('Push DockerHub') {
             steps {
                 echo 'Push de l\'image Docker sur DockerHub...'
@@ -103,7 +95,6 @@ pipeline {
             }
         }
 
-        // Docker Compose pour déployer les conteneurs
         stage('Docker Compose') {
             steps {
                 echo 'Exécution de Docker Compose'
