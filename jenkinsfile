@@ -23,33 +23,13 @@ pipeline {
             }
         }
 
-        stage('Maven Compile') {
-            steps {
-                echo 'Exécution de Maven Compile'
-                sh 'mvn compile'
-            }
-        }
-
-        stage('Run Tests with JaCoCo') {
-            steps {
-                echo 'Exécution des tests avec JaCoCo pour générer les rapports de couverture'
-                sh 'mvn test' // Exécute les tests et génère les rapports JaCoCo
-            }
-        }
-
-        stage('Check JaCoCo Report') {
-            steps {
-                echo 'Vérification des fichiers JaCoCo générés'
-                sh 'ls -la target/site/jacoco/' // Vérifie si les rapports JaCoCo sont créés
-            }
-        }
-
         stage('Coverage Report') {
             steps {
-                echo 'Génération du rapport de couverture JaCoCo'
-                sh 'mvn verify' // Génère le rapport final de couverture après l'exécution des tests
+                // Generate the Jacoco coverage report
+                sh '/usr/share/maven/bin/mvn verify'
             }
         }
+
 
         stage('SonarQube Analysis') {
             steps {
@@ -63,6 +43,13 @@ pipeline {
                         -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                     '''
                 }
+            }
+        }
+
+         stage('JUnit/Mockito Tests') {
+            steps {
+                echo 'Running JUnit/Mockito Tests'
+                sh 'mvn test jacoco:report'
             }
         }
 
