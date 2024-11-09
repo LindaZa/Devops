@@ -81,7 +81,7 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <phase>test</phase>
+                        <phase>test</phase> <!-- Phase où JaCoCo commence à collecter les données -->
                     </execution>
 
                     <!-- Générer le rapport JaCoCo après les tests -->
@@ -92,24 +92,27 @@
                         </goals>
                         <phase>post-integration-test</phase>
                         <configuration>
+                            <!-- Spécifier le fichier des données JaCoCo -->
                             <dataFile>${project.build.directory}/jacoco.exec</dataFile>
-                            <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
-                            <output>file</output>
-                            <append>true</append>
-                            <destFile>${project.build.directory}/jacoco-report/jacoco.xml</destFile>
+
+                            <!-- Spécifier où le rapport sera généré -->
+                            <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+
+                            <!-- Spécifier que le rapport sera généré en HTML -->
+                            <output>html</output>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Plugin SonarQube pour l'analyse de code -->
+            <!-- Plugin SonarQube -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar.maven.plugin.version}</version>
             </plugin>
 
-            <!-- Plugin Maven Compiler pour la compilation -->
+            <!-- Plugin Maven Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -120,7 +123,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin Spring Boot pour la gestion des applications Spring Boot -->
+            <!-- Plugin Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
