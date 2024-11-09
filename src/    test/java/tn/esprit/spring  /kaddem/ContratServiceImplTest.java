@@ -41,6 +41,7 @@ public class ContratServiceImplTest {
         Contrat addedContrat = contratService.addContrat(contrat);
         assertNotNull(addedContrat);
         assertEquals(Specialite.CLOUD, addedContrat.getSpecialite());
+        assertEquals(2000, addedContrat.getMontantContrat());
         verify(contratRepository, times(1)).save(contrat);
     }
 
@@ -52,6 +53,7 @@ public class ContratServiceImplTest {
         Contrat updatedContrat = contratService.updateContrat(contrat);
         assertNotNull(updatedContrat);
         assertEquals(Specialite.IA, updatedContrat.getSpecialite());
+        assertEquals(3000, updatedContrat.getMontantContrat());
         verify(contratRepository, times(1)).save(contrat);
     }
 
@@ -67,12 +69,24 @@ public class ContratServiceImplTest {
     }
 
     @Test
+    public void testRetrieveContrat_NotFound() {
+        when(contratRepository.findById(2)).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> contratService.retrieveContrat(2));
+    }
+
+    @Test
     public void testRemoveContrat() {
         Contrat contrat = new Contrat(1, new Date(), new Date(), Specialite.SECURITE, false, 2500);
         when(contratRepository.findById(1)).thenReturn(Optional.of(contrat));
-        
+
         contratService.removeContrat(1);
         verify(contratRepository, times(1)).delete(contrat);
+    }
+
+    @Test
+    public void testRemoveContrat_NotFound() {
+        when(contratRepository.findById(1)).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> contratService.removeContrat(1));
     }
 
     @Test
@@ -91,6 +105,7 @@ public class ContratServiceImplTest {
         Contrat result = contratService.affectContratToEtudiant(1, "Dupont", "Jean");
         assertNotNull(result);
         assertEquals(etudiant, result.getEtudiant());
+        assertTrue(etudiant.getContrats().contains(contrat)); // Vérification de l'affectation
         verify(contratRepository, times(1)).save(contrat);
     }
 }
