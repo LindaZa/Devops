@@ -19,25 +19,25 @@ pipeline {
         stage('Maven Clean and Test') {
             steps {
                 echo 'Exécution de Maven Clean et Test'
-                sh 'mvn clean test'
+                sh 'mvn clean verify'  // Remarquez le "verify" ici pour s'assurer que la phase de rapport est incluse
             }
         }
 
-        stage('Coverage Report') {
-            steps {
-                echo 'Génération du rapport de couverture avec JaCoCo'
-                sh 'mvn clean test jacoco:prepare-agent jacoco:report'
-            }
-        }
-
-        stage('Verify Jacoco Report') {
+        stage('Verify JaCoCo Report') {
             steps {
                 echo 'Vérification de la présence du fichier de rapport JaCoCo'
                 script {
-                    // Liste les fichiers dans target/ pour vérifier la présence du fichier jacoco.xml
-                    sh 'ls -l target/'
-                    sh 'ls -l target/jacoco-report/'
-                    sh 'ls -l target/jacoco-report/jacoco.xml'
+                    // Liste tous les fichiers dans target/ pour diagnostiquer
+                    sh 'echo "Contenu de target/" && ls -l target/'
+
+                    // Liste les fichiers dans target/jacoco-report/ (où le rapport devrait être généré)
+                    sh 'echo "Contenu de target/jacoco-report/" && ls -l target/jacoco-report/'
+
+                    // Liste les fichiers dans target/site/jacoco/ (le répertoire alternatif où JaCoCo pourrait générer le rapport)
+                    sh 'echo "Contenu de target/site/jacoco/" && ls -l target/site/jacoco/'
+
+                    // Vérifiez également la présence du fichier .exec, essentiel pour la génération du rapport
+                    sh 'echo "Vérification de la présence du fichier jacoco.exec" && ls -l target/jacoco.exec'
                 }
             }
         }
@@ -57,6 +57,7 @@ pipeline {
             }
         }
 
+        // Déploiement sur Nexus
         stage('Deploy to Nexus') {
             steps {
                 echo 'Déploiement vers Nexus...'
@@ -91,14 +92,16 @@ pipeline {
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Pipeline terminée avec succès!'
-        }
-        failure {
-            echo 'Pipeline échoué. Vérifiez les logs pour les détails.'
+        stage('Docker Compose') {
+            steps {
+                echo 'Exécution de Docker Compose'
+                script {
+                    sh 'docker compose pull'
+                    sh 'docker compose down'
+                    sh 'docker compose up -d'
+                }
+            }
         }
     }
 }
