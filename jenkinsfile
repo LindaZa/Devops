@@ -33,7 +33,20 @@ pipeline {
         stage('Verify Jacoco Report') {
             steps {
                 echo 'Vérification de la présence du fichier de rapport JaCoCo'
-                sh 'ls -l target/jacoco-report'  // Vérifie que le fichier jacoco.xml est généré
+                script {
+                    def reportExists = false
+                    for (int i = 0; i < 5; i++) {
+                        sleep(5)  // Attendre 5 secondes avant de vérifier à nouveau
+                        def fileCheck = sh(script: 'ls -l target/jacoco-report/jacoco.xml', returnStatus: true)
+                        if (fileCheck == 0) {
+                            reportExists = true
+                            break
+                        }
+                    }
+                    if (!reportExists) {
+                        error "Le fichier de rapport JaCoCo n'a pas été généré après plusieurs tentatives."
+                    }
+                }
             }
         }
 
@@ -42,10 +55,10 @@ pipeline {
                 echo 'Exécution de l\'analyse SonarQube'
                 withSonarQubeEnv('SonarQube-Server') {
                     sh '''
-                        mvn sonar:sonar
-                        -Dsonar.projectKey=ahed
-                        -Dsonar.host.url=$SONAR_HOST_URL
-                        -Dsonar.login=$SONAR_LOGIN
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=ahed \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=$SONAR_LOGIN \
                         -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report/jacoco.xml
                     '''
                 }
@@ -100,6 +113,7 @@ pipeline {
         }
     }
 }
+
 
               
                    
