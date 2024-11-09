@@ -30,10 +30,10 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Tests with JaCoCo') {
             steps {
-                echo 'Exécution des tests Maven'
-                sh 'mvn test' // Cette étape exécute les tests, ce qui génère les rapports JaCoCo
+                echo 'Exécution des tests avec JaCoCo pour générer les rapports de couverture'
+                sh 'mvn test' // Cette étape exécute les tests et génère les rapports JaCoCo
             }
         }
 
@@ -47,7 +47,7 @@ pipeline {
         stage('Coverage Report') {
             steps {
                 echo 'Génération du rapport de couverture JaCoCo'
-                sh 'mvn verify' // Cette étape génère le rapport JaCoCo après l'exécution des tests
+                sh 'mvn verify' // Génère le rapport final de couverture après l'exécution des tests
             }
         }
 
@@ -92,28 +92,7 @@ pipeline {
 
         stage('Push DockerHub') {
             steps {
-                echo 'Push de l\'image Docker sur DockerHub...'
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockercredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                        sh 'docker push ahedgossa2024/dockerrepository:1.0.0'
-                    }
-                }
-            }
-        }
-
-        stage('Docker Compose') {
-            steps {
-                echo 'Exécution de Docker Compose'
-                script {
-                    sh 'docker compose pull'
-                    sh 'docker compose down'
-                    sh 'docker compose up -d'
-                }
-            }
-        }
-    }
-}
+                echo 'Push de l\'image Docker
 
                 
         
