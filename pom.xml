@@ -68,6 +68,7 @@
 
     <build>
         <plugins>
+            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -78,11 +79,13 @@
                 </configuration>
             </plugin>
 
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
+            <!-- JaCoCo Plugin pour la couverture de code -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -104,6 +107,7 @@
                 </executions>
             </plugin>
 
+            <!-- SonarQube Plugin pour l'analyse du code -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
@@ -111,4 +115,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>MavenRepository</id>
+            <name>Nexus Repository</name>
+            <url>http://10.0.2.15:9001/repository/MavenRepository/</url> <!-- URL du dépôt Nexus -->
+        </repository>
+    </distributionManagement>
 </project>
+
+   
+      
+                
+           
