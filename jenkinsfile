@@ -16,10 +16,10 @@ pipeline {
             }
         }
 
-        stage('Maven Clean') {
+        stage('Maven Clean and Test') {
             steps {
-                echo 'Exécution de Maven Clean'
-                sh 'mvn clean'
+                echo 'Exécution de Maven Clean et Test'
+                sh 'mvn clean test'
             }
         }
 
@@ -27,8 +27,6 @@ pipeline {
             steps {
                 echo 'Génération du rapport de couverture avec JaCoCo'
                 sh 'mvn clean test jacoco:prepare-agent jacoco:report'
-                // Ajouter cette commande pour lister les fichiers générés dans target/
-                sh 'ls -l target/'
             }
         }
 
@@ -36,22 +34,10 @@ pipeline {
             steps {
                 echo 'Vérification de la présence du fichier de rapport JaCoCo'
                 script {
-                    def reportExists = false
-                    // On vérifie dans les deux répertoires possibles
-                    for (int i = 0; i < 5; i++) {
-                        sleep(5)  // Attendre 5 secondes avant de vérifier à nouveau
-                        // Vérifier dans target/jacoco-report/
-                        def fileCheck1 = sh(script: 'ls -l target/jacoco-report/jacoco.xml', returnStatus: true)
-                        // Vérifier dans target/site/jacoco/
-                        def fileCheck2 = sh(script: 'ls -l target/site/jacoco/jacoco.xml', returnStatus: true)
-                        if (fileCheck1 == 0 || fileCheck2 == 0) {
-                            reportExists = true
-                            break
-                        }
-                    }
-                    if (!reportExists) {
-                        error "Le fichier de rapport JaCoCo n'a pas été généré après plusieurs tentatives."
-                    }
+                    // Liste les fichiers dans target/ pour vérifier la présence du fichier jacoco.xml
+                    sh 'ls -l target/'
+                    sh 'ls -l target/jacoco-report/'
+                    sh 'ls -l target/jacoco-report/jacoco.xml'
                 }
             }
         }
@@ -105,16 +91,14 @@ pipeline {
                 }
             }
         }
+    }
 
-        stage('Docker Compose') {
-            steps {
-                echo 'Exécution de Docker Compose'
-                script {
-                    sh 'docker compose pull'
-                    sh 'docker compose down'
-                    sh 'docker compose up -d'
-                }
-            }
+    post {
+        success {
+            echo 'Pipeline terminée avec succès!'
+        }
+        failure {
+            echo 'Pipeline échoué. Vérifiez les logs pour les détails.'
         }
     }
 }
