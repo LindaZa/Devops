@@ -93,19 +93,25 @@
                 <executions>
                     <!-- Préparation de l'agent JaCoCo avant l'exécution des tests -->
                     <execution>
-                        <id>jacoco-initialize</id>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <phase>test</phase> <!-- Phase de test pour préparer l'agent -->
                     </execution>
                     <!-- Génération du rapport JaCoCo après l'exécution des tests -->
                     <execution>
-                        <id>jacoco-report</id>
+                        <id>report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <phase>verify</phase> <!-- Phase 'verify' pour générer le rapport -->
+                        <phase>verify</phase>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>
+                            <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+                            <output>file</output>
+                            <append>true</append>
+                            <destFile>${project.build.directory}/jacoco-report/jacoco.xml</destFile>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
