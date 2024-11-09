@@ -30,17 +30,24 @@ pipeline {
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                echo 'Exécution des tests Maven'
+                sh 'mvn test' // Cette étape exécute les tests, ce qui génère les rapports JaCoCo
+            }
+        }
+
         stage('Check JaCoCo Report') {
             steps {
                 echo 'Vérification des fichiers JaCoCo générés'
-                sh 'ls -la target/site/jacoco/'
+                sh 'ls -la target/site/jacoco/' // Vérifie si les rapports JaCoCo sont créés
             }
         }
 
         stage('Coverage Report') {
             steps {
                 echo 'Génération du rapport de couverture JaCoCo'
-                sh 'mvn verify'
+                sh 'mvn verify' // Cette étape génère le rapport JaCoCo après l'exécution des tests
             }
         }
 
