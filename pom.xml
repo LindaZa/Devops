@@ -92,7 +92,7 @@
                             <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
                             <output>file</output>
                             <append>true</append>
-                            <destFile>${project.build.directory}/jacoco-report/jacoco.xml</destFile>
+                            <destFile>${project.build.directory}/jacoco-report/jacoco.xml</destFile>  <!-- Chemin du fichier de rapport -->
                         </configuration>
                     </execution>
                 </executions>
@@ -132,6 +132,7 @@
         </repository>
     </distributionManagement>
 </project>
+
 
 
    
