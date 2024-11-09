@@ -12,7 +12,7 @@
         <repository>
             <id>deploymentRepo</id>
             <name>Nexus Repository</name>
-            <url>http://192.168.1.15:8081/repository/maven-releases/</url>
+            <url>http://192.168.1.10:8081/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
     <groupId>tn.esprit.spring</groupId>
@@ -130,7 +130,11 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.9.1.2184</version> <!-- Version du plugin à vérifier -->
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version> <!-- Version mise à jour -->
+            </plugin>
 
         </plugins>
 
