@@ -91,21 +91,21 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.11</version>
                 <executions>
+                    <!-- Préparation de l'agent JaCoCo avant l'exécution des tests -->
                     <execution>
-                        <!-- Prépare l'agent JaCoCo avant d'exécuter les tests -->
                         <id>jacoco-initialize</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <phase>test</phase> <!-- Phase 'test' pour exécuter pendant les tests -->
+                        <phase>test</phase> <!-- Phase de test pour préparer l'agent -->
                     </execution>
+                    <!-- Génération du rapport JaCoCo après l'exécution des tests -->
                     <execution>
-                        <!-- Génère le rapport après avoir exécuté les tests -->
                         <id>jacoco-report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <phase>verify</phase> <!-- Phase 'verify' pour générer le rapport JaCoCo -->
+                        <phase>verify</phase> <!-- Phase 'verify' pour générer le rapport -->
                     </execution>
                 </executions>
             </plugin>
@@ -123,10 +123,11 @@
         <repository>
             <id>MavenRepository</id>
             <name>Nexus Repository</name>
-            <url>http://10.0.2.15:9001/repository/MavenRepository/</url>
+            <url>http://10.0.2.15:9001/repository/MavenRepository/</url> <!-- URL du dépôt Nexus -->
         </repository>
     </distributionManagement>
 </project>
+
 
    
       
