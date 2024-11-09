@@ -42,10 +42,10 @@ pipeline {
                 echo 'Exécution de l\'analyse SonarQube'
                 withSonarQubeEnv('SonarQube-Server') {
                     sh '''
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=ahed \ 
-                        -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=$SONAR_LOGIN \
+                        mvn sonar:sonar
+                        -Dsonar.projectKey=ahed
+                        -Dsonar.host.url=$SONAR_HOST_URL
+                        -Dsonar.login=$SONAR_LOGIN
                         -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report/jacoco.xml
                     '''
                 }
@@ -101,8 +101,7 @@ pipeline {
     }
 }
 
-
-       
+              
                    
            
 
