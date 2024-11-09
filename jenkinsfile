@@ -92,7 +92,28 @@ pipeline {
 
         stage('Push DockerHub') {
             steps {
-                echo 'Push de l\'image Docker
+                echo 'Push de l\'image Docker sur DockerHub...'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockercredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        sh 'docker push ahedgossa2024/dockerrepository:1.0.0'
+                    }
+                }
+            }
+        }
+
+        stage('Docker Compose') {
+            steps {
+                echo 'Exécution de Docker Compose'
+                script {
+                    sh 'docker compose pull'
+                    sh 'docker compose down'
+                    sh 'docker compose up -d'
+                }
+            }
+        }
+    }
+}
 
                 
         
