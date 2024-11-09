@@ -25,8 +25,15 @@ pipeline {
 
         stage('Coverage Report') {
             steps {
-                echo 'Génération du rapport de couverture'
-                sh 'mvn clean verify'
+                echo 'Génération du rapport de couverture avec JaCoCo'
+                sh 'mvn clean test jacoco:prepare-agent jacoco:report'
+            }
+        }
+
+        stage('Verify Jacoco Report') {
+            steps {
+                echo 'Vérification de la présence du fichier de rapport JaCoCo'
+                sh 'ls -l target/jacoco-report'  // Vérifie que le fichier jacoco.xml est généré
             }
         }
 
@@ -36,19 +43,12 @@ pipeline {
                 withSonarQubeEnv('SonarQube-Server') {
                     sh '''
                         mvn sonar:sonar \
-                        -Dsonar.projectKey=ahed \
+                        -Dsonar.projectKey=ahed \  # Utilisez le bon nom du projet SonarQube
                         -Dsonar.host.url=$SONAR_HOST_URL \
                         -Dsonar.login=$SONAR_LOGIN \
                         -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report/jacoco.xml
                     '''
                 }
-            }
-        }
-
-        stage('JUnit/Mockito Tests') {
-            steps {
-                echo 'Running JUnit/Mockito Tests'
-                sh 'mvn test jacoco:report'
             }
         }
 
@@ -101,9 +101,8 @@ pipeline {
     }
 }
 
-
-                
-        
+              
+   
                    
            
 
