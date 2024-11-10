@@ -6,10 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import tn.esprit.spring.kaddem.entities.Contrat;
-import tn.esprit.spring.kaddem.entities.Etudiant;
 import tn.esprit.spring.kaddem.entities.Specialite;
 import tn.esprit.spring.kaddem.repositories.ContratRepository;
-import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
 
 import java.util.*;
 
@@ -21,9 +19,6 @@ public class ContratServiceImplTest {
 
     @Mock
     private ContratRepository contratRepository;
-
-    @Mock
-    private EtudiantRepository etudiantRepository;
 
     @InjectMocks
     private ContratServiceImpl contratService;
@@ -57,6 +52,9 @@ public class ContratServiceImplTest {
         verify(contratRepository, times(1)).save(contrat);
     }
 
+    // Les autres tests sont commentés ci-dessous car tu as mentionné de ne les exécuter qu'après validation des tests ci-dessus
+
+    /*
     @Test
     public void testRetrieveContrat() {
         Contrat contrat = new Contrat(1, new Date(), new Date(), Specialite.RESEAUX, false, 4000);
@@ -108,4 +106,8 @@ public class ContratServiceImplTest {
         assertTrue(etudiant.getContrats().contains(contrat)); // Vérification de l'affectation
         verify(contratRepository, times(1)).save(contrat);
     }
+    */
 }
+
+  
+  
