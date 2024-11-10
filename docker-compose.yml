@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:latest
@@ -7,9 +5,9 @@ services:
       MYSQL_ROOT_PASSWORD: 0000
       MYSQL_DATABASE: kaddem_db
     ports:
-      - "3307:3306"
+      - "3307:3306"  # Expose le port 3306 du conteneur sur le port 3307 de l'hôte
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data:/var/lib/mysql  # Persiste les données de la base dans le volume db-data
     restart: always
 
   app:
@@ -19,27 +17,11 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 0000
     ports:
-      - "8089:8089"
+      - "8089:8089"  # Expose le port 8089 du conteneur sur le même port de l'hôte
     depends_on:
-      - db
-
-  sonarqube:
-    image: sonarqube:latest
-    environment:
-      SONARQUBE_JDBC_URL: jdbc:mysql://db:3306/kaddem_db?createDatabaseIfNotExist=true
-    ports:
-      - "9000:9000"
-    restart: always
-
-  nexus:
-    image: sonatype/nexus3:latest
-    ports:
-      - "9001:8081"
-    volumes:
-      - nexus-data:/nexus-data
-    restart: always
+      - db  # L'application dépend du service db, elle attend que db soit prêt avant de démarrer
 
 volumes:
-  db-data:
-  nexus-data:
+  db-data:  # Volume pour persister les données MySQL
 
+      
