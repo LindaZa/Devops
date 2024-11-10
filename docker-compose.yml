@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: mysql:latest
@@ -11,7 +13,7 @@ services:
     restart: always
 
   app:
-    image:  ahedgossa2024/dockerrepository:1.0.0
+    image: ahedgossa2024/dockerrepository:1.0.0
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/kaddem_db?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
@@ -21,5 +23,23 @@ services:
     depends_on:
       - db
 
+  sonarqube:
+    image: sonarqube:latest
+    environment:
+      SONARQUBE_JDBC_URL: jdbc:mysql://db:3306/kaddem_db?createDatabaseIfNotExist=true
+    ports:
+      - "9000:9000"
+    restart: always
+
+  nexus:
+    image: sonatype/nexus3:latest
+    ports:
+      - "9001:8081"
+    volumes:
+      - nexus-data:/nexus-data
+    restart: always
+
 volumes:
   db-data:
+  nexus-data:
+
