@@ -19,7 +19,7 @@ pipeline {
         stage('Maven Clean and Test') {
             steps {
                 echo 'Exécution de Maven Clean et Test'
-                sh 'mvn clean verify'  // Remarquez le "verify" ici pour s'assurer que la phase de rapport est incluse
+                sh 'mvn clean verify'  // Exécution de verify pour s'assurer que la phase post-test est incluse
             }
         }
 
@@ -30,14 +30,14 @@ pipeline {
                     // Liste tous les fichiers dans target/ pour diagnostiquer
                     sh 'echo "Contenu de target/" && ls -l target/'
 
-                    // Liste les fichiers dans target/jacoco-report/ (où le rapport devrait être généré)
-                    sh 'echo "Contenu de target/jacoco-report/" && ls -l target/jacoco-report/'
+                    // Liste les fichiers dans target/site/jacoco/ où le rapport devrait être généré
+                    sh 'echo "Contenu de target/site/jacoco/" && ls -l target/site/jacoco/ || echo "Le répertoire target/site/jacoco/ n\'existe pas"'
 
-                    // Liste les fichiers dans target/site/jacoco/ (le répertoire alternatif où JaCoCo pourrait générer le rapport)
-                    sh 'echo "Contenu de target/site/jacoco/" && ls -l target/site/jacoco/'
+                    // Vérification de la présence du fichier jacoco.exec
+                    sh 'echo "Vérification de la présence du fichier jacoco.exec" && ls -l target/jacoco.exec || echo "Le fichier jacoco.exec n\'existe pas"'
 
-                    // Vérifiez également la présence du fichier .exec, essentiel pour la génération du rapport
-                    sh 'echo "Vérification de la présence du fichier jacoco.exec" && ls -l target/jacoco.exec'
+                    // Vérification de la présence du fichier jacoco.xml
+                    sh 'echo "Vérification de la présence de jacoco.xml" && ls -l target/site/jacoco/jacoco.xml || echo "Le fichier jacoco.xml n\'existe pas"'
                 }
             }
         }
@@ -51,7 +51,7 @@ pipeline {
                         -Dsonar.projectKey=ahed \
                         -Dsonar.host.url=$SONAR_HOST_URL \
                         -Dsonar.login=$SONAR_LOGIN \
-                        -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report/jacoco.xml
+                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                     '''
                 }
             }
@@ -76,18 +76,18 @@ pipeline {
             steps {
                 echo 'Construction de l\'image Docker...'
                 script {
-                    sh 'docker build -t ahedgossa2024/dockerrepository:1.0.0 -f Dockerfile .'
+                    sh 'docker build -t ahedgossa2024/devops .'
                 }
             }
         }
 
-        stage('Push DockerHub') {
+        stage('Push Docker Image') {
             steps {
-                echo 'Push de l\'image Docker sur DockerHub...'
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockercredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                        sh 'docker push ahedgossa2024/dockerrepository:1.0.0'
+                echo 'Poussée de l\'image Docker vers Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: 'dockercredentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    script {
+                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                        sh "docker push ahedgossa2024/devops"
                     }
                 }
             }
@@ -106,6 +106,7 @@ pipeline {
     }
 }
 
+       
 
               
                    
