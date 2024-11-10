@@ -23,6 +23,14 @@ pipeline {
             }
         }
 
+        // Stage "Run Tests" explicite, pour s'assurer que les tests sont exécutés
+        stage('Run Tests') {
+            steps {
+                echo 'Exécution des tests unitaires...'
+                sh 'mvn test'  // Exécution des tests unitaires avec JaCoCo pour collecter les informations de couverture
+            }
+        }
+
         stage('Verify JaCoCo Report') {
             steps {
                 echo 'Vérification de la présence du fichier de rapport JaCoCo'
