@@ -5,9 +5,9 @@ services:
       MYSQL_ROOT_PASSWORD: 0000
       MYSQL_DATABASE: kaddem_db
     ports:
-      - "3307:3306"  # Expose le port 3306 du conteneur sur le port 3307 de l'hôte
+      - "3307:3306"
     volumes:
-      - db-data:/var/lib/mysql  # Persiste les données de la base dans le volume db-data
+      - db-data:/var/lib/mysql
     restart: always
 
   app:
@@ -17,11 +17,30 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 0000
     ports:
-      - "8089:8089"  # Expose le port 8089 du conteneur sur le même port de l'hôte
+      - "8089:8089"
     depends_on:
-      - db  # L'application dépend du service db, elle attend que db soit prêt avant de démarrer
+      - db
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - /etc/prometheus:/etc/prometheus
+    entrypoint: |
+      sh -c 'echo "
+        global:
+          scrape_interval: 15s
+        scrape_configs:
+          - job_name: 'app'
+            static_configs:
+              - targets: ['app:8089']
+      " > /etc/prometheus/prometheus.yml && \
+      /bin/prometheus --config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - app
 
 volumes:
-  db-data:  # Volume pour persister les données MySQL
-
-      
+  db-data:
