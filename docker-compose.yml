@@ -21,26 +21,7 @@ services:
     depends_on:
       - db
 
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-    volumes:
-      - /etc/prometheus:/etc/prometheus
-    entrypoint: |
-      sh -c 'echo "
-        global:
-          scrape_interval: 15s
-        scrape_configs:
-          - job_name: 'app'
-            static_configs:
-              - targets: ['app:8089']
-      " > /etc/prometheus/prometheus.yml && \
-      /bin/prometheus --config.file=/etc/prometheus/prometheus.yml'
-    depends_on:
-      - app
-
 volumes:
   db-data:
+
+    
