@@ -1,0 +1,94 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_CREDENTIALS_ID = 'devops'  // ID des credentials pour GitHub
+        SONARQUBE_TOKEN = credentials('lindatoken')  // ID du token d'authentification SonarQube
+        SONAR_PROJECT_KEY = 'linda'  // Remplacez par la clé de votre projet SonarQube
+        SONAR_HOST_URL = '192.168.1.7:9000'  // L'URL de votre serveur SonarQube
+        NEXUS_USER = 'admin'
+        NEXUS_PASS = 'Nexuslin1*'
+    }
+
+    stages {
+        stage('Checkout from GitHub') {
+            steps {
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/lindayasminezaafrani']],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/LindaZa/Devops.git',
+                            credentialsId: env.GIT_CREDENTIALS_ID
+                        ]]
+                    ])
+                }
+            }
+        }
+
+        stage('Maven Clean') {
+            steps {
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Maven Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('JUnit/Mockito') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        sh "mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONARQUBE_TOKEN}"
+                    }
+                }
+            }
+        }
+
+
+        stage('Nexus') {
+            steps {
+                sh 'mvn deploy -DskipTests -Dusername=${NEXUS_USER} -Dpassword=${NEXUS_PASS}'
+            }
+        }
+
+        // Stage Docker Images - Build Docker image
+        stage('Docker Images') {
+            steps {
+                script {
+                    // Construire l'image Docker avec le tag 5.0.0
+                    sh 'docker build -t lindazaafrani/docker:5.0.0 .'
+                }
+            }
+        }
+
+        // Stage Docker Hub - Push Docker image to Docker Hub
+        stage('Docker Hub') {
+            steps {
+                script {
+                    // Se connecter à Docker Hub et pousser l'image
+                    sh '''
+                        docker login -u lindazaafrani -p dockerlin
+                        docker push lindazaafrani/docker:5.0.0
+                    '''
+                }
+            }
+        }
+         stage('Docker Compose') {
+            steps {
+                script {
+                    sh 'docker compose pull'
+                    sh 'docker compose down'
+                    sh 'docker compose up -d'
+                }
+            }
+        }
+    }
+}
