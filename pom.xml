@@ -60,12 +60,14 @@
         </dependency>
 
     </dependencies>
+
     <distributionManagement>
-    <repository>
+        <repository>
             <id>nexus</id>
-            <url>http://localhost:8081/repository/maven-releases/</url>
-    </repository>
+            <url>http://localhost:8081/repository/devops-jamil/</url>
+        </repository>
     </distributionManagement>
+
 
 
     <build>
