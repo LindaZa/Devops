@@ -2,7 +2,11 @@ pipeline {
     agent any
 
     environment {
+        MAVEN_HOME = '/opt/maven'
+        PATH = "${MAVEN_HOME}/bin:${env.PATH}"
         GIT_CREDENTIALS_ID = 'Devops'  // Utilisez votre ID de credentials GitHub dans Jenkins
+        NEXUS_CREDS = credentials('nexus_credentiel')
+
     }
 
     stages {
@@ -21,7 +25,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Maven Clean') {
             steps {
                 echo 'Running Maven Clean'
@@ -35,10 +39,23 @@ pipeline {
                 sh 'mvn compile'
             }
         }
+        stage('build'){
+            steps {
+                sh "mvn package"
+            }
+
+        }
+        stage('Run Tests') {
+            steps {
+                echo 'Running unit tests...'
+
+                sh 'mvn test'
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
-                
+
                     sh '''
                         mvn -f pom.xml sonar:sonar \
                           -Dsonar.projectKey=Devops \
@@ -47,8 +64,17 @@ pipeline {
                           -Dsonar.java.coveragePlugin=jacoco \
                           -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml
                     '''
-                
+
             }
         }
+
+       stage('Deploy to Nexus') {
+                steps {
+                    sh 'mvn deploy -X'
+
+            }
+        }
+
     }
+
 }
